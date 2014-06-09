@@ -98,6 +98,15 @@
 (function(exports){
     var $={};
     
+    $.remove=function(arr,value){
+        for(var i=0;i<arr.length;i++){
+            if(arr[i]===value){
+                arr.splice(i,1);
+                break;
+            }
+        }
+    };
+    
     $.each=function(obj,cb){
         for(var key in obj){
             if(obj.hasOwnProperty(key)){
@@ -132,6 +141,12 @@
             this.list.forEach(function(fn){
                 fn.apply(null,args);
             });
+        },
+        add:function(fn){
+            this.list.push(fn);
+        },
+        remove:function(fn){
+            $.remove(this.list,fn);
         }
     });
     
