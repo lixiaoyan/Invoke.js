@@ -15,6 +15,14 @@ Requirements
 
 - [jakearchibald/es6-promise](https://github.com/jakearchibald/es6-promise)
 
+Browser Support
+---------------
+
+| Browser                        | Version |
+| :----------------------------- | ------: |
+| Internet Explorer              |     11+ |
+| Chrome, Firefox, Safari, Opera |  latest |
+
 Modules
 -------
 
