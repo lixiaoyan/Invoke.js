@@ -1,3 +1,5 @@
+var global=global || window;
+
 /* jshint proto:true */
 (function(){
     "use strict";
@@ -82,7 +84,7 @@
     };
     
     exports.Class=Class;
-})(window);
+})(global);
 
 (function(Promise){
     if(!Promise.defer){
@@ -154,4 +156,4 @@
     });
     
     exports.$=$;
-})(window);
+})(global);

@@ -79,7 +79,8 @@
             data instanceof ArrayBuffer ||
             data instanceof Blob ||
             data instanceof Document ||
-            data instanceof FormData
+            data instanceof FormData ||
+            ArrayBuffer.isView(data)
         ){
             return data;
         }
@@ -127,7 +128,7 @@
         
         if(no_content){
             if(typeof config.data!="string"){
-                return Promise.reject("Error: data must be string.");
+                throw new TypeError("data must be string.");
             }
             url=concat_param(url,config.data);
         }
@@ -140,7 +141,7 @@
         
         xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
         // FIXME: how to send plain string?
-        if(!no_content && typeof config.data=="string"){
+        if(!no_content && typeof config.data=="string" && !config.headers["Content-Type"]){
             xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         }
         
