@@ -27,6 +27,7 @@ Modules
 - function Class(ctor) // create a new class
 - function Class.extend(extend,ctor)
 
+- function $.remove(arr,value)
 - function $.each(obj,cb)
 - function $.mix(obj,mix)
 - class $.Delegate(list)
