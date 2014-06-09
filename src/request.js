@@ -14,9 +14,6 @@
         config.data=$.Request.param(config.data);
         config.async=!!config.async;
         config.headers=$.mix({},[$.Request._default.headers,config.headers]);
-        if(config.username && config.password){
-            config.auth=true;
-        }
         this.config=config;
     }).method({
         type:function(type){
@@ -41,11 +38,9 @@
         },
         auth:function(username,password){
             if(username && password){
-                this.config.auth=true;
                 this.config.username=username;
                 this.config.password=password;
             }else{
-                this.config.auth=false;
                 this.config.username=null;
                 this.config.password=null;
             }
@@ -66,31 +61,26 @@
             return this;
         }
     });
-    
     $.Request._default={
         type:"GET",
         data:null,
         async:true,
-        headers:{
-            "X-Requested-With":"XMLHttpRequest",
-            "Content-Type":"application/x-www-form-urlencoded"
-        },
-        auth:false,
+        headers:{},
         username:null,
         password:null
-    };
-    $.Request.config=function(name,value){
-        this._default[name]=value;
-    };
-    $.Request.config.header=function(name,value){
-        this._default.headers[name]=value;
     };
     
     $.Request.param=function(data){
         if(!data){
             return "";
         }
-        if(typeof data=="string" || data instanceof FormData){
+        if(
+            typeof data=="string" ||
+            data instanceof ArrayBuffer ||
+            data instanceof Blob ||
+            data instanceof Document ||
+            data instanceof FormData
+        ){
             return data;
         }
         var arr=[];
@@ -100,10 +90,11 @@
         return arr.join("&");
     };
     
-    $.load=function(req){
+    // TODO: wrap response & error
+    $.load=function(req,config){
         if(Array.isArray(req)){
             var list=req.map(function(item){
-                return $.load(item);
+                return $.load(item,config);
             });
             var promise=Promise.all(list);
             promise.abort=$.Delegate(list.map(function(item){
@@ -111,9 +102,11 @@
             })).call;
             return promise;
         }
+        
         if(typeof req=="string"){
-            req=$.Request(req);
+            req=$.Request(req,config);
         }
+        
         var defer=Promise.defer();
         
         var xhr=new XMLHttpRequest();
@@ -128,18 +121,27 @@
             xhr.abort();
         };
         
-        var config=req.config;
+        config=req.config;
         var no_content=(config.type=="GET" || config.type=="HEAD");
-        
         var url=req.url;
+        
         if(no_content){
+            if(typeof config.data!="string"){
+                return Promise.reject("Error: data must be string.");
+            }
             url=concat_param(url,config.data);
         }
         
-        if(config.auth){
+        if(config.username && config.password){
             xhr.open(config.type,url,config.async,config.username,config.password);
         }else{
             xhr.open(config.type,url,config.async);
+        }
+        
+        xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
+        // FIXME: how to send plain string?
+        if(!no_content && typeof config.data=="string"){
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         }
         
         $.each(config.headers,function(key,value){
@@ -154,6 +156,7 @@
         
         return defer.promise;
     };
+    
     $.Request.method({
         send:function(){
             return $.load(this);
