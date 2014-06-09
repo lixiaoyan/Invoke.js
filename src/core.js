@@ -19,7 +19,9 @@
 (function(exports){
     "use strict";
     
-    var __blank__=function(){};
+    var __blank__=function(){
+        this.super.apply(this,arguments);
+    };
     
     var __mix__=function(obj,mix){
         Object.getOwnPropertyNames(mix).forEach(function(name){
@@ -105,6 +107,7 @@
                 break;
             }
         }
+        return arr;
     };
     
     $.each=function(obj,cb){
