@@ -5,6 +5,11 @@ A JavaScript Library.
 
 **Warning: this library is incomplete.**
 
+License
+-------
+
+MIT License
+
 Requirements
 ------------
 
