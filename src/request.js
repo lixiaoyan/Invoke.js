@@ -116,6 +116,51 @@
         return arr.join("&");
     };
     
+    var Response=Class(function(xhr){
+        this.xhr=xhr;
+    }).method({
+        auto:function(){
+            return this.xhr.response;
+        },
+        text:function(){
+            return this.xhr.responseText;
+        },
+        xml:function(){
+            return this.xhr.responseXML;
+        },
+        json:function(){
+            if(this.xhr.responseType=="json"){
+                return this.xhr.response;
+            }else{
+                return JSON.parse(this.xhr.responseText);
+            }
+        },
+        header:function(name){
+            if(name){
+                return this.xhr.getResponseHeader(name);
+            }else{
+                return this.xhr.getAllResponseHeaders();
+            }
+        },
+        get status(){
+            return this.xhr.status;
+        },
+        get statusText(){
+            return this.xhr.statusText;
+        }
+    });
+    
+    var RequestError=Class(function(xhr){
+        this.xhr=xhr;
+    }).method({
+        get status(){
+            return this.xhr.status;
+        },
+        get statusText(){
+            return this.xhr.statusText;
+        }
+    });
+    
     // TODO: wrap response & error
     $.load=function(req,config){
         if(Array.isArray(req)){
@@ -137,10 +182,10 @@
         
         var xhr=new XMLHttpRequest();
         xhr.onload=function(){
-            defer.resolve(xhr);
+            defer.resolve(Response(xhr));
         };
         xhr.onerror=function(){
-            defer.reject(xhr);
+            defer.reject(RequestError(xhr));
         };
         
         defer.promise.abort=function(){
