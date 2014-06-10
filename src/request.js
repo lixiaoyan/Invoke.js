@@ -14,6 +14,7 @@
         config.data=$.Request.param(config.data);
         config.async=!!config.async;
         config.headers=$.mix({},[$.Request._default.headers,config.headers]);
+        config.timeout=Number(config.timeout);
         this.config=config;
         
         this.header_names={};
@@ -73,6 +74,14 @@
                 this.config.data=param;
             }
             return this;
+        },
+        timeout:function(timeout){
+            this.config.timeout=Number(timeout);
+            return this;
+        },
+        responseType:function(type){
+            this.config.responseType=type;
+            return this;
         }
     });
     $.Request._default={
@@ -81,7 +90,9 @@
         async:true,
         headers:{},
         username:null,
-        password:null
+        password:null,
+        timeout:0,
+        responseType:""
     };
     
     $.Request.param=function(data){
@@ -145,6 +156,14 @@
                 throw new TypeError("data must be string.");
             }
             url=concat_param(url,config.data);
+        }
+        
+        if(config.timeout){
+            xhr.timeout=config.timeout;
+        }
+        
+        if(config.responseType){
+            xhr.responseType=config.responseType;
         }
         
         if(config.username && config.password){
