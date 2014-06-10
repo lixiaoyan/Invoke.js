@@ -161,7 +161,6 @@
         }
     });
     
-    // TODO: wrap response & error
     $.load=function(req,config){
         if(Array.isArray(req)){
             var list=req.map(function(item){
