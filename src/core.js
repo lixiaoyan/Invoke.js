@@ -1,4 +1,6 @@
-var global=global || window;
+if(typeof global=="undefined"){
+    window.global=window;
+}
 
 /* jshint proto:true */
 (function(){
