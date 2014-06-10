@@ -15,6 +15,12 @@
         config.async=!!config.async;
         config.headers=$.mix({},[$.Request._default.headers,config.headers]);
         this.config=config;
+        
+        this.header_names={};
+        
+        var headers=this.config.headers;
+        this.config.headers={};
+        this.header(headers);
     }).method({
         type:function(type){
             this.config.type=type;
@@ -30,9 +36,17 @@
         },
         header:function(name,value){
             if(typeof name=="string"){
-                this.config.headers[name]=value;
+                var l_name=name.toLowerCase();
+                if(this.header_names[l_name]){
+                    this.config.headers[this.header_names[l_name]]=value;
+                }else{
+                    this.config.headers[this.header_names[l_name]=name]=value;
+                }
             }else{
-                $.mix(this.config.headers,name);
+                var self=this;
+                $.each(name,function(name,value){
+                    this.header(name,value);
+                });
             }
             return this;
         },
@@ -140,8 +154,10 @@
         }
         
         xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
-        // FIXME: how to send plain string?
-        if(!no_content && typeof config.data=="string" && !config.headers["Content-Type"]){
+        if(
+            !no_content && typeof config.data=="string" &&
+            !config.headers[req.header_names["Content-Type".toLowerCase()]]
+        ){
             xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         }
         
