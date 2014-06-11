@@ -110,6 +110,9 @@ delegate.add(function(name){
     console.log(name);
 });
 
+delegate.length;
+// -> 4
+
 delegate.call("test");
 // 1
 // 2

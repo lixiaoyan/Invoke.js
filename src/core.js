@@ -154,6 +154,9 @@ if(typeof global=="undefined"){
         },
         remove:function(fn){
             $.remove(this.list,fn);
+        },
+        get length(){
+            return this.list.length;
         }
     });
     
