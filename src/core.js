@@ -145,7 +145,7 @@ if(typeof global=="undefined"){
     }).method({
         call:function(){
             var args=arguments;
-            this.list.forEach(function(fn){
+            this.list.slice(0).forEach(function(fn){
                 fn.apply(null,args);
             });
         },
