@@ -114,10 +114,10 @@ if(typeof global=="undefined"){
         return arr;
     };
     
-    $.each=function(obj,cb){
+    $.each=function(obj,cb,ctx){
         for(var key in obj){
             if(obj.hasOwnProperty(key)){
-                cb(key,obj[key]);
+                cb.call(ctx,key,obj[key]);
             }
         }
     };
