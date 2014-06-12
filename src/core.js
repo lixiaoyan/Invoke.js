@@ -150,10 +150,20 @@ if(typeof global=="undefined"){
             });
         },
         add:function(fn){
-            this.list.push(fn);
+            if(Array.isArray(fn)){
+                Array.prototype.push.apply(this.list,fn);
+            }else{
+                this.list.push(fn);
+            }
         },
         remove:function(fn){
-            $.remove(this.list,fn);
+            if(Array.isArray(fn)){
+                fn.forEach(function(fn){
+                    $.remove(this.list,fn);
+                },this);
+            }else{
+                $.remove(this.list,fn);
+            }
         },
         get length(){
             return this.list.length;
