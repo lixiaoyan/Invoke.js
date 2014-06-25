@@ -81,6 +81,17 @@ if(typeof global=="undefined"){
             extend=__Base__;
         }else if(extend==Array){
             extend=__ArrayBase__;
+        }else if(extend==Error || extend.prototype instanceof Error){
+            var origin_ctor=ctor || __blank__;
+            ctor=function(){
+                if(Error.captureStackTrace){
+                    Error.captureStackTrace(this,this.constructor);
+                }else{
+                    // FIXME: format the stack string.
+                    this.stack=new Error().stack;
+                }
+                return origin_ctor.apply(this,arguments);
+            };
         }
         return __Class__(ctor,extend);
     };

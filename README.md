@@ -28,6 +28,7 @@ Modules
 
 - **Core**
 - **Request** - ajax
+- **Event** - event model
 
 ### Core (core.js)
 
